@@ -1,63 +1,140 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tracking Result</title>
-
+<meta charset="UTF-8">
+<title>Track Package</title>
 <style>
-body { font-family: Arial; background:#eef2f7; padding:20px; }
-
-.card {
-  background:white;
-  padding:20px;
-  border-radius:10px;
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    margin: 0;
 }
 
-.statusBox {
-  background:#e8dccb;
-  padding:15px;
-  margin-top:15px;
-  border-left:5px solid orange;
+/* Header */
+.header {
+    background: #1f3c68;
+    color: white;
+    padding: 15px;
+    font-size: 18px;
+}
+
+/* Container */
+.container {
+    max-width: 500px;
+    margin: 30px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Input */
+input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Card */
+.card {
+    background: #e8dccb;
+    padding: 20px;
+    border-left: 5px solid orange;
+    border-radius: 5px;
+}
+
+/* Status Icons */
+.status {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.step {
+    text-align: center;
+    font-size: 14px;
+}
+
+.circle {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #ccc;
+    margin: auto;
+    line-height: 35px;
+    color: white;
+}
+
+.active {
+    background: green;
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
+<div class="header">
+🌐 Global Express Courier
+</div>
 
-<h2>📦 Shipment Details</h2>
+<div class="container">
 
-<p><b>Tracking Code:</b> <span id="code"></span></p>
-<p><b>Status:</b> <span id="status"></span></p>
-<p><b>Location:</b> <span id="location"></span></p>
-<p><b>Date:</b> <span id="date"></span></p>
+<h2>Track Package</h2>
 
-<div class="statusBox" id="extra"></div>
+<input type="text" id="codeInput">
+
+<div id="result"></div>
 
 </div>
 
 <script>
-let params = new URLSearchParams(window.location.search);
-let code = params.get("code");
+// Get code from URL
+const params = new URLSearchParams(window.location.search);
+const code = params.get("code");
 
-let data = JSON.parse(localStorage.getItem("tracking") || "{}");
+document.getElementById("codeInput").value = code;
 
-if(data[code]){
-let d = data[code];
+// Get stored data
+let data = JSON.parse(localStorage.getItem(code));
 
-document.getElementById("code").innerText = code;
-document.getElementById("status").innerText = d.status;
-document.getElementById("location").innerText = d.location;
-document.getElementById("date").innerText = new Date().toDateString();
+if (!data) {
+    document.getElementById("result").innerHTML = "<h3>Tracking Not Found</h3>";
+} else {
 
-if(d.status === "On Hold"){
-document.getElementById("extra").innerHTML =
-"⚠ Package is currently on hold. Please contact support.";
-}
+    let shipped = "";
+    let transit = "";
+    let hold = "";
 
-}else{
-document.body.innerHTML = "<h2>Tracking Not Found</h2>";
+    if (data.status === "Shipped") shipped = "active";
+    if (data.status === "Transit") transit = "active";
+    if (data.status === "Hold") hold = "active";
+
+    document.getElementById("result").innerHTML = `
+    <div class="card">
+        <h3>${data.status}</h3>
+
+        <div class="status">
+            <div class="step">
+                <div class="circle ${shipped}">✓</div>
+                Shipped
+            </div>
+            <div class="step">
+                <div class="circle ${transit}">✓</div>
+                Transit
+            </div>
+            <div class="step">
+                <div class="circle ${hold}">!</div>
+                Hold
+            </div>
+        </div>
+
+        <p><b>Tracking:</b> ${code}</p>
+        <p><b>Location:</b> ${data.location}</p>
+        <p><b>Date:</b> ${new Date().toDateString()}</p>
+    </div>
+    `;
 }
 </script>
 
