@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Express</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #eef2f7;
+  text-align: center;
+  padding-top: 80px;
+}
+
+.box {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  margin: auto;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  background: #1f3b63;
+  color: white;
+  border: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>📦 Track Your Package</h2>
+
+<input id="code" placeholder="Enter Tracking Code">
+
+<button onclick="track()">Track</button>
+</div>
+
+<script>
+function track(){
+let code = document.getElementById("code").value;
+window.location.href = "track.html?code=" + code;
+}
+</script>
+
+</body>
+</html>
